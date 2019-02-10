@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PhotoArtWork2_reverse</title>
+    <meta name="description" content="website description"/>
+    <meta name="keywords" content="website keywords, website keywords"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <!-- stylesheets -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ url_for('static', filename='css/portfolio_one.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ url_for('static', filename='css/colour.css') }}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+            integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+            crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+<div id="main">
+    <!-- begin header -->
+    <header>
+        <div class="row">
+            <div class="col-md-6" id="logo"><h3 style="color: white;">Access logs</h3></div>
+        </div>
+    </header>
+    <div class="container">
+        <table class="table" style="background-color:white">
+            <thead>
+            <tr>
+                <th>screen_time</th>
+                <th>label</th>
+                <th>is_access_allowed</th>
+                <th>face_attributes</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.screen_time }}</td>
+                <td>{{ log.label }}</td>
+                <td>{{ log.is_access_allowed }}</td>
+                <td data-json="{{ log.face_attributes }}">
+                    <button type="button" class="btn btn-primary attributes">Check all face attributes</button>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr/>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.attributes').on('click', function(){
+        var attr = $(this).closest("td").data('json');
+        $('.modal .modal-body').text(attr)
+        $('.modal').modal('show')
+    })
+</script>
+</body>
+</html>

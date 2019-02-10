@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PhotoArtWork2_reverse</title>
+    <meta name="description" content="website description"/>
+    <meta name="keywords" content="website keywords, website keywords"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <!-- stylesheets -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ url_for('static', filename='css/portfolio_one.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ url_for('static', filename='css/colour.css') }}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+            integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div id="main">
+    <!-- begin header -->
+    <header>
+        <div class="row">
+            <div class="col-md-6" id="logo"><h3 style="color: white;">Smile to Access</h3></div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="row">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-primary screenSmile">Screen Smile</button>
+            </div>
+        </div>
+        <hr/>
+    </div>
+    <hr/>
+    <div class="container">
+        <div class="row screen-face-container">
+            <div class="col-md-6 screen-face-container-img">
+                <img src="static/images/please-smile.jpg" style="min-width:100%;max-height:100%;">
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header accessDenied">
+                        <label class="identity">Identity detected: <span style="color:blue"></span></label>
+                    </div>
+                    <div class="card-header ">
+                        <label class="access accessDenied">Access Denied</label>
+                    </div>
+                    <div class="card-body">
+                        <label style="text-align:left">Smile</label>
+                        <div class="progress">
+                            <div class="progress-bar smile" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                                 aria-valuemax="100">0%
+                            </div>
+                        </div>
+
+                        <label style="text-align:left">Happy</label>
+                        <div class="progress">
+                            <div class="progress-bar happy" role="progressbar" style="width: 25%" aria-valuenow="25"
+                                 aria-valuemin="0" aria-valuemax="100">25%
+                            </div>
+                        </div>
+
+                        <label style="text-align:left">Sad</label>
+                        <div class="progress">
+                            <div class="progress-bar sad" role="progressbar" style="width: 25%" aria-valuenow="25"
+                                 aria-valuemin="0" aria-valuemax="100">25%
+                            </div>
+                        </div>
+
+                        <label style="text-align:left">Calm</label>
+                        <div class="progress">
+                            <div class="progress-bar calm" role="progressbar" style="width: 50%" aria-valuenow="50"
+                                 aria-valuemin="0" aria-valuemax="100">50%
+                            </div>
+                        </div>
+
+                        <label style="text-align:left">Surprised</label>
+                        <div class="progress">
+                            <div class="progress-bar surprised" role="progressbar" style="width: 75%" aria-valuenow="75"
+                                 aria-valuemin="0" aria-valuemax="100">75%
+                            </div>
+                        </div>
+
+                        <label style="text-align:left">Angry</label>
+                        <div class="progress">
+                            <div class="progress-bar angry" role="progressbar" style="width: 100%" aria-valuenow="100"
+                                 aria-valuemin="0" aria-valuemax="100">100%
+                            </div>
+                        </div>
+                        <label style="text-align:left">Disgusted</label>
+                        <div class="progress">
+                            <div class="progress-bar disgusted" role="progressbar" style="width: 100%"
+                                 aria-valuenow="100"
+                                 aria-valuemin="0" aria-valuemax="100">100%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    $('.screenSmile').bind( "click", function(e) {
+            $.ajax({
+                url: '/screen_smile',
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                dataType: "json",
+                success: function(response) {
+
+                if(response.face_match != null){
+
+                $('.identity span').text(response.face_match.FaceMatches[0].Face.ExternalImageId.toUpperCase())
+
+             console.log(response.face_details)
+                updateSmileProgress(response.face_details)
+                updateRelativeProgress('HAPPY', response.face_details);
+                updateRelativeProgress('CALM', response.face_details);
+                updateRelativeProgress('SURPRISED', response.face_details);
+                updateRelativeProgress('SAD', response.face_details);
+                updateRelativeProgress('ANGRY', response.face_details);
+                updateRelativeProgress('DISGUSTED', response.face_details);
+                    console.log(response.img)
+                    console.log()
+                    console.log(response.face_details)
+                    console.log(response.face_match.FaceMatches[0].Face.ExternalImageId)
+                    console.log(response.face_details.FaceDetails[0].Emotions[0])
+
+                    $('.screen-face-container-img').html("<img src=" + response.img +" class='img-thumbnail' alt='No image' width='100'>")
+                 }
+                }
+            });
+    });
+
+    function updateRelativeProgress(emotion, data)
+    {
+        var element = $('.progress-bar.'+ emotion.toLowerCase());
+        var emotionObj = data.FaceDetails[0].Emotions.filter(function (el) { return el.Type == emotion.toUpperCase() } );
+        console.log(emotionObj);
+        element.css('width', parseInt(emotionObj[0].Confidence) + "%")
+        element.text(parseInt(emotionObj[0].Confidence) + " %")
+
+    }
+
+    function updateSmileProgress(data){
+      var element = $('.progress-bar.smile');
+      var isSmile= data.FaceDetails[0].Smile.Value
+      var confidence = data.FaceDetails[0].Smile.Confidence
+
+      if (isSmile)
+      {
+        $('.access').text("Access Allowed")
+        $('.access').removeClass('accessDenied').addClass('accessAllowed')
+        element.css('width', parseInt(confidence) + "%")
+        element.text(parseInt(confidence) + " %")
+      }
+      else{
+        $('.access').text("Access Denied")
+        $('.access').removeClass('accessAllowed').addClass('accessDenied')
+        element.css('width', ( 100 - parseInt(confidence)) + "%")
+        element.text(( 100 - parseInt(confidence)) + " %")
+      }
+
+    }
+
+
+
+</script>
+</body>
+</html>

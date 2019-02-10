@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PhotoArtWork2_reverse</title>
+    <meta name="description" content="website description"/>
+    <meta name="keywords" content="website keywords, website keywords"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <!-- stylesheets -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ url_for('static', filename='css/portfolio_one.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ url_for('static', filename='css/colour.css') }}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+            integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+            crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+<div id="main">
+    <!-- begin header -->
+    <header>
+        <div class="row">
+            <div class="col-md-6" id="logo"><h3 style="color: white;">IoT Image Detection Project</h3></div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="row">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-primary takePicture">Take picture</button>
+                <button type="button" class="btn btn-primary train_with_aws">Start training process</button>
+            </div>
+        </div>
+        <hr/>
+        <form id="aws">
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Amazon Rekognition Collection</span>
+                        </div>
+                        <input type="text" class="form-control collection" name="collection" placeholder="Collection"
+                               aria-label="Collection"
+                               aria-describedby="basic-addon1" value="home">
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon2">Picture Label</span>
+                        </div>
+                        <input type="text" class="form-control lbl" name="lbl" placeholder="Label" aria-label="Label"
+                               aria-describedby="basic-addon2">
+                    </div>
+
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+    <hr/>
+    <div class="container">
+        <div class="row imgCheck">
+
+        </div>
+    </div>
+</div>
+<script>
+
+    $('.takePicture').bind( "click", function(e) {
+
+            $.ajax({
+                url: '/take_picture',
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                dataType: "json",
+                success: function(response) {
+                    console.log(response)
+                    $('.imgCheck').append("<div class='col-md-3'><img src=" + response.img +" class='img-thumbnail mx-auto d-block' alt='Cinque Terre' width='200' height='200'></div>")
+                }
+            });
+    });
+
+    $('.train_with_aws').bind('click', function(e){
+            var data = {
+                'label' : $('.lbl').val(),
+                'collection' : $('.collection').val()
+            }
+            $.ajax({
+                url: '/train_with_aws',
+                data: JSON.stringify(data),
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                dataType: "json",
+                success: function(response) {
+                    console.log(response)
+                }
+            });
+    });
+
+</script>
+
+</body>
+</html>
